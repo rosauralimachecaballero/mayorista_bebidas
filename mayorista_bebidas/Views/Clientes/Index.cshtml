@@ -1,0 +1,59 @@
+﻿@model IEnumerable<mayorista_bebidas.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Clientes";
+    bool soloActivos = ViewBag.SoloActivos is bool b && b;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Clientes</h2>
+    <div>
+        <a asp-action="Index" asp-route-soloActivos="false"
+           class="btn btn-sm @(soloActivos ? "btn-outline-secondary" : "btn-primary")">
+            Todos
+        </a>
+        <a asp-action="Index" asp-route-soloActivos="true"
+           class="btn btn-sm @(soloActivos ? "btn-success" : "btn-outline-success")">
+            Solo activos
+        </a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No hay clientes registrados en Supabase para mostrar.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Creado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in Model)
+            {
+                <tr>
+                    <td>@cliente.Id</td>
+                    <td>@cliente.Nombre</td>
+                    <td>@(cliente.Telefono ?? "-")</td>
+                    <td>@(cliente.Email ?? "-")</td>
+                    <td>
+                        <span class="badge @(cliente.Activo ? "bg-success" : "bg-secondary")">
+                            @(cliente.Activo ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                    <td>@cliente.CreadoEn.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
